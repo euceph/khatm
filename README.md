@@ -11,7 +11,7 @@
 
 khatm will be available on the App Store, with a companion app for watchOS
 
-there will also be a companion .ipa file released for altstore, etc.
+there will also be a companion .ipa file released for AltStore, etc.
 
 ## Usage
 
