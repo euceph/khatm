@@ -9,10 +9,10 @@
 
 ## Installation
 
-khatm will be available on the Apple App Store, with a companion app for watchOS
+khatm will be available on the App Store, with a companion app for watchOS
 
-There will also be a companion .ipa file released for other installation needs
+there will also be a companion .ipa file released for altstore, etc.
 
 ## Usage
 
-Usage steps coming soon.
+usage steps coming soon
