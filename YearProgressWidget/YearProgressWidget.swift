@@ -9,12 +9,12 @@ struct YearPercentageWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(
             kind: "YearPercentageWidget",
-            provider: YearPercentageTimelineProvider()
+            provider: YearPercentageProvider()
         ) { entry in
             YearPercentageWidgetView(entry: entry)
         }
         .configurationDisplayName("khatm")
-        .description("shows percentage of your year completed or remaining")
+        .description("shows the percentage of your year completed or remaining")
         .supportedFamilies([.accessoryRectangular])
     }
 }
@@ -24,7 +24,7 @@ struct YearPercentageEntry: TimelineEntry {
     let showRemaining: Bool
 }
 
-struct YearPercentageTimelineProvider: TimelineProvider {
+struct YearPercentageProvider: TimelineProvider {
     func placeholder(in context: Context) -> YearPercentageEntry {
         YearPercentageEntry(date: Date(), showRemaining: true)
     }
@@ -35,15 +35,8 @@ struct YearPercentageTimelineProvider: TimelineProvider {
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<YearPercentageEntry>) -> Void) {
-        let currentDate = Date()
-        let remainingEntry = YearPercentageEntry(date: currentDate, showRemaining: true)
-        let passedEntry = YearPercentageEntry(date: currentDate, showRemaining: false)
-        
-        // Update every hour
-        let nextUpdateDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
-        let timeline = Timeline(entries: [remainingEntry, passedEntry], policy: .after(nextUpdateDate))
-        
-        completion(timeline)
+        let entry = YearPercentageEntry(date: Date(), showRemaining: true)
+        completion(Timeline(entries: [entry], policy: .never))
     }
 }
 
@@ -69,13 +62,18 @@ struct YearPercentageWidgetView: View {
             .minimumScaleFactor(0.1)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .contentShape(Rectangle())
-            .containerBackground(.black.opacity(0.8), for: .widget)
+            .containerBackground(.opacity(0.8), for: .widget)
     }
 }
 
-#Preview(as: .accessoryRectangular) {
+#Preview("Remaining", as: .accessoryRectangular) {
     YearPercentageWidget()
 } timeline: {
     YearPercentageEntry(date: Date(), showRemaining: true)
+}
+
+#Preview("Elapsed", as: .accessoryRectangular) {
+    YearPercentageWidget()
+} timeline: {
     YearPercentageEntry(date: Date(), showRemaining: false)
 }
