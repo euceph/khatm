@@ -1,79 +1,105 @@
-// YearProgressWidget
-// authored by issa euceph
-// november 11, 2024
-
 import WidgetKit
 import SwiftUI
 
-struct YearPercentageWidget: Widget {
+struct Provider: AppIntentTimelineProvider {
+    func placeholder(in context: Context) -> SimpleEntry {
+        SimpleEntry(
+            date: Date(),
+            progressOptionEntity: YearProgressOptionEntity(id: "elapsed", displayOption: .elapsed)
+        )
+    }
+
+    func snapshot(for configuration: YearProgressIntent, in context: Context) async -> SimpleEntry {
+        SimpleEntry(
+            date: Date(),
+            progressOptionEntity: configuration.resolvedProgressOption
+        )
+    }
+
+    func timeline(for configuration: YearProgressIntent, in context: Context) async -> Timeline<SimpleEntry> {
+        let currentDate = Date()
+        let calendar = Calendar.current
+        
+        let entries = stride(from: 0, through: 60, by: 5).map { minuteOffset in
+            let entryDate = calendar.date(byAdding: .minute, value: minuteOffset, to: currentDate)!
+            return SimpleEntry(
+                date: entryDate,
+                progressOptionEntity: configuration.resolvedProgressOption
+            )
+        }
+        
+        let nextUpdate = calendar.date(byAdding: .minute, value: 5, to: entries.last?.date ?? currentDate)!
+        return Timeline(entries: entries, policy: .after(nextUpdate))
+    }
+}
+
+struct SimpleEntry: TimelineEntry {
+    let date: Date
+    let progressOptionEntity: YearProgressOptionEntity
+
+    var percentage: Double {
+        let calendar = Calendar.current
+        let year = calendar.component(.year, from: date)
+        let startOfYear = calendar.date(from: DateComponents(year: year))!
+        let endOfYear = calendar.date(from: DateComponents(year: year + 1))!
+        
+        let totalSeconds = endOfYear.timeIntervalSince(startOfYear)
+        let elapsedSeconds = date.timeIntervalSince(startOfYear)
+        let elapsedPercentage = (elapsedSeconds / totalSeconds) * 100
+        
+        return progressOptionEntity.displayOption == .elapsed ? elapsedPercentage : (100 - elapsedPercentage)
+    }
+}
+
+struct YearProgressWidgetEntryView: View {
+    var entry: SimpleEntry
+    
+    var body: some View {
+        Text(String(format: "%.3f%%", entry.percentage))
+              .font(.system(size: 300, weight: .bold, design: .rounded))
+              .minimumScaleFactor(0.1)
+//              .frame(maxWidth: .infinity, maxHeight: .infinity)
+              .containerBackground(.clear, for: .widget)
+      }
+}
+
+struct YearProgressWidget: Widget {
+    let kind: String = "YearProgressWidget"
+
     var body: some WidgetConfiguration {
-        StaticConfiguration(
-            kind: "YearPercentageWidget",
-            provider: YearPercentageProvider()
+        AppIntentConfiguration(
+            kind: kind,
+            intent: YearProgressIntent.self,
+            provider: Provider()
         ) { entry in
-            YearPercentageWidgetView(entry: entry)
+            YearProgressWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("khatm")
-        .description("shows the percentage of your year completed or remaining")
+        .description("shows the percentage of your year elapsed or remaining")
         .supportedFamilies([.accessoryRectangular])
     }
 }
 
-struct YearPercentageEntry: TimelineEntry {
-    let date: Date
-    let showRemaining: Bool
-}
-
-struct YearPercentageProvider: TimelineProvider {
-    func placeholder(in context: Context) -> YearPercentageEntry {
-        YearPercentageEntry(date: Date(), showRemaining: true)
-    }
-    
-    func getSnapshot(in context: Context, completion: @escaping (YearPercentageEntry) -> Void) {
-        let entry = YearPercentageEntry(date: Date(), showRemaining: true)
-        completion(entry)
-    }
-    
-    func getTimeline(in context: Context, completion: @escaping (Timeline<YearPercentageEntry>) -> Void) {
-        let entry = YearPercentageEntry(date: Date(), showRemaining: true)
-        completion(Timeline(entries: [entry], policy: .never))
-    }
-}
-
-struct YearPercentageWidgetView: View {
-    let entry: YearPercentageEntry
-    
-    var percentage: Double {
-        let calendar = Calendar.current
-        let year = calendar.component(.year, from: entry.date)
-        let startOfYear = calendar.date(from: DateComponents(year: year))!
-        let endOfYear = calendar.date(from: DateComponents(year: year + 1))!
-        
-        let totalDays = calendar.dateComponents([.day], from: startOfYear, to: endOfYear).day!
-        let daysPassed = calendar.dateComponents([.day], from: startOfYear, to: entry.date).day!
-        
-        let percentagePassed = Double(daysPassed) / Double(totalDays) * 100
-        return entry.showRemaining ? (100 - percentagePassed) : percentagePassed
-    }
-    
-    var body: some View {
-        Text(String(format: "%.2f%%", percentage))
-            .font(.system(size: 300, weight: .bold, design: .rounded))
-            .minimumScaleFactor(0.1)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .contentShape(Rectangle())
-            .containerBackground(.opacity(0.8), for: .widget)
-    }
-}
-
-#Preview("Remaining", as: .accessoryRectangular) {
-    YearPercentageWidget()
+#Preview(as: .accessoryRectangular) {
+    YearProgressWidget()
 } timeline: {
-    YearPercentageEntry(date: Date(), showRemaining: true)
+        SimpleEntry(
+            date: .now,
+            progressOptionEntity: YearProgressOptionEntity(id: "remaining", displayOption: .remaining)
+        )
 }
 
-#Preview("Elapsed", as: .accessoryRectangular) {
-    YearPercentageWidget()
+#Preview("Live Updates", as: .accessoryRectangular) {
+    YearProgressWidget()
 } timeline: {
-    YearPercentageEntry(date: Date(), showRemaining: false)
+    let calendar = Calendar.current
+    let dates = stride(from: 0, through: 15, by: 5).compactMap { minuteOffset in
+        calendar.date(byAdding: .minute, value: minuteOffset, to: .now)
+    }
+    return dates.map { date in
+        SimpleEntry(
+            date: date,
+            progressOptionEntity: YearProgressOptionEntity(id: "remaining", displayOption: .remaining)
+        )
+    }
 }

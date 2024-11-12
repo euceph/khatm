@@ -11,7 +11,7 @@ import SwiftUI
 @main
 struct YearProgressWidgetBundle: WidgetBundle {
     var body: some Widget {
-        YearPercentageWidget()
+        YearProgressWidget()
         YearProgressWidgetControl()
         YearProgressWidgetLiveActivity()
     }
