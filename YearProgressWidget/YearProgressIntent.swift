@@ -50,14 +50,16 @@ struct YearProgressEntityQuery: EntityQuery {
 
 struct YearProgressIntent: WidgetConfigurationIntent {
     static var title: LocalizedStringResource = "Configure Year Progress"
-    static var description: IntentDescription = "Choose whether to display elapsed or remaining year progress."
+    static var description: IntentDescription = "Choose whether to display elapsed or remaining year progress and set decimal places."
 
     @Parameter(title: "perspective")
     var progressOption: YearProgressOptionEntity?
+    
+    @Parameter(title: "decimal", default: 3)
+    var decimalPlaces: Int
     
     var resolvedProgressOption: YearProgressOptionEntity {
         progressOption ?? YearProgressOptionEntity(id: "remaining", displayOption: .remaining)
     }
 }
-
 

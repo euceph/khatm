@@ -76,13 +76,11 @@ struct DaysLeftWidgetEntryView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(.leading, 10)
+            .padding(.leading, 20)
         }
         .containerBackground(.clear, for: .widget)
     }
 }
-
-
 
 struct DaysLeftWidget: Widget {
     let kind: String = "DaysLeftWidget"
@@ -95,8 +93,8 @@ struct DaysLeftWidget: Widget {
         ) { entry in
             DaysLeftWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("days left")
-        .description("the number of days left in your year")
+        .configurationDisplayName("days")
+        .description("the number of days passed/left in your year")
         .supportedFamilies([.accessoryRectangular])
     }
 }

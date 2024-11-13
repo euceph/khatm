@@ -12,8 +12,7 @@ import SwiftUI
 struct YearProgressWidgetBundle: WidgetBundle {
     var body: some Widget {
         YearProgressWidget()
+        ProgressPillWidget()
         DaysLeftWidget()
-        YearProgressWidgetControl()
-        YearProgressWidgetLiveActivity()
     }
 }

@@ -5,14 +5,16 @@ struct Provider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry(
             date: Date(),
-            progressOptionEntity: YearProgressOptionEntity(id: "elapsed", displayOption: .elapsed)
+            progressOptionEntity: YearProgressOptionEntity(id: "elapsed", displayOption: .elapsed),
+            decimalPlaces: 3
         )
     }
 
     func snapshot(for configuration: YearProgressIntent, in context: Context) async -> SimpleEntry {
         SimpleEntry(
             date: Date(),
-            progressOptionEntity: configuration.resolvedProgressOption
+            progressOptionEntity: configuration.resolvedProgressOption,
+            decimalPlaces: configuration.decimalPlaces
         )
     }
 
@@ -24,7 +26,8 @@ struct Provider: AppIntentTimelineProvider {
             let entryDate = calendar.date(byAdding: .minute, value: minuteOffset, to: currentDate)!
             return SimpleEntry(
                 date: entryDate,
-                progressOptionEntity: configuration.resolvedProgressOption
+                progressOptionEntity: configuration.resolvedProgressOption,
+                decimalPlaces: configuration.decimalPlaces
             )
         }
         
@@ -36,7 +39,8 @@ struct Provider: AppIntentTimelineProvider {
 struct SimpleEntry: TimelineEntry {
     let date: Date
     let progressOptionEntity: YearProgressOptionEntity
-
+    let decimalPlaces: Int
+    
     var percentage: Double {
         let calendar = Calendar.current
         let year = calendar.component(.year, from: date)
@@ -62,16 +66,15 @@ struct YearProgressWidgetEntryView: View {
         case .accessoryCircular:
             accessoryCircularView
         default:
-            Text("Unsupported")
+            Text("unsupported")
         }
     }
 
     private var accessoryRectangularView: some View {
-        Text(String(format: "%.3f%%", entry.percentage))
-              .font(.system(size: 300, weight: .bold, design: .rounded))
-              .minimumScaleFactor(0.1)
-//              .frame(maxWidth: .infinity, maxHeight: .infinity)
-              .containerBackground(.clear, for: .widget)
+        Text(String(format: "%.\(entry.decimalPlaces)f%%", entry.percentage))
+            .font(.system(size: 40, weight: .bold, design: .rounded))
+            .minimumScaleFactor(0.5)
+            .containerBackground(.clear, for: .widget)
     }
 
     private var accessoryCircularView: some View {
@@ -83,7 +86,6 @@ struct YearProgressWidgetEntryView: View {
             
             Text(String(format: "%.0f%%", entry.percentage))
                 .font(.system(size: 18, weight: .bold, design: .rounded))
-                .foregroundColor(.accentColor)
         }
         .containerBackground(.clear, for: .widget)
     }
@@ -111,7 +113,8 @@ struct YearProgressWidget: Widget {
 } timeline: {
         SimpleEntry(
             date: .now,
-            progressOptionEntity: YearProgressOptionEntity(id: "remaining", displayOption: .remaining)
+            progressOptionEntity: YearProgressOptionEntity(id: "remaining", displayOption: .remaining),
+            decimalPlaces: 3
         )
 }
 
@@ -120,7 +123,8 @@ struct YearProgressWidget: Widget {
 } timeline: {
     SimpleEntry(
         date: .now,
-        progressOptionEntity: YearProgressOptionEntity(id: "elapsed", displayOption: .elapsed)
+        progressOptionEntity: YearProgressOptionEntity(id: "elapsed", displayOption: .elapsed),
+        decimalPlaces: 3
     )
 }
 
@@ -134,7 +138,8 @@ struct YearProgressWidget: Widget {
     return dates.map { date in
         SimpleEntry(
             date: date,
-            progressOptionEntity: YearProgressOptionEntity(id: "remaining", displayOption: .remaining)
+            progressOptionEntity: YearProgressOptionEntity(id: "remaining", displayOption: .remaining),
+            decimalPlaces: 3
         )
     }
 }
