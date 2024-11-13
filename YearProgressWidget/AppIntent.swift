@@ -52,7 +52,7 @@ struct YearProgressIntent: WidgetConfigurationIntent {
     static var title: LocalizedStringResource = "Configure Year Progress"
     static var description: IntentDescription = "Choose whether to display elapsed or remaining year progress."
 
-    @Parameter(title: "progress option")
+    @Parameter(title: "perspective")
     var progressOption: YearProgressOptionEntity?
     
     var resolvedProgressOption: YearProgressOptionEntity {

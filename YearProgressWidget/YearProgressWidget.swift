@@ -53,14 +53,40 @@ struct SimpleEntry: TimelineEntry {
 
 struct YearProgressWidgetEntryView: View {
     var entry: SimpleEntry
-    
+    @Environment(\.widgetFamily) var family
+
     var body: some View {
+        switch family {
+        case .accessoryRectangular:
+            accessoryRectangularView
+        case .accessoryCircular:
+            accessoryCircularView
+        default:
+            Text("Unsupported")
+        }
+    }
+
+    private var accessoryRectangularView: some View {
         Text(String(format: "%.3f%%", entry.percentage))
               .font(.system(size: 300, weight: .bold, design: .rounded))
               .minimumScaleFactor(0.1)
 //              .frame(maxWidth: .infinity, maxHeight: .infinity)
               .containerBackground(.clear, for: .widget)
-      }
+    }
+
+    private var accessoryCircularView: some View {
+        ZStack {
+            Gauge(value: entry.percentage, in: 0...100) {
+                EmptyView()
+            }
+            .gaugeStyle(.accessoryCircular)
+            
+            Text(String(format: "%.0f%%", entry.percentage))
+                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .foregroundColor(.accentColor)
+        }
+        .containerBackground(.clear, for: .widget)
+    }
 }
 
 struct YearProgressWidget: Widget {
@@ -76,7 +102,7 @@ struct YearProgressWidget: Widget {
         }
         .configurationDisplayName("percentage")
         .description("shows the percentage of your year elapsed or remaining")
-        .supportedFamilies([.accessoryRectangular])
+        .supportedFamilies([.accessoryRectangular, .accessoryCircular])
     }
 }
 
@@ -87,6 +113,15 @@ struct YearProgressWidget: Widget {
             date: .now,
             progressOptionEntity: YearProgressOptionEntity(id: "remaining", displayOption: .remaining)
         )
+}
+
+#Preview("Circular Preview", as: .accessoryCircular) {
+    YearProgressWidget()
+} timeline: {
+    SimpleEntry(
+        date: .now,
+        progressOptionEntity: YearProgressOptionEntity(id: "elapsed", displayOption: .elapsed)
+    )
 }
 
 #Preview("Live Updates", as: .accessoryRectangular) {
