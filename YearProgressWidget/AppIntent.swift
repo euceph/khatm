@@ -20,13 +20,13 @@ struct YearProgressOptionEntity: AppEntity {
         switch displayOption {
         case .elapsed:
             return DisplayRepresentation(
-                title: "Year Elapsed",
-                subtitle: "Displays the percentage of the year that has passed"
+                title: "elapsed",
+                subtitle: "show how much of the year has passed"
             )
         case .remaining:
             return DisplayRepresentation(
-                title: "Year Remaining",
-                subtitle: "Displays the percentage of the year left"
+                title: "remaining",
+                subtitle: "show how much of the year is left"
             )
         }
     }
@@ -52,7 +52,7 @@ struct YearProgressIntent: WidgetConfigurationIntent {
     static var title: LocalizedStringResource = "Configure Year Progress"
     static var description: IntentDescription = "Choose whether to display elapsed or remaining year progress."
 
-    @Parameter(title: "Display")
+    @Parameter(title: "progress option")
     var progressOption: YearProgressOptionEntity?
     
     var resolvedProgressOption: YearProgressOptionEntity {

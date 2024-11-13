@@ -74,13 +74,13 @@ struct YearProgressWidget: Widget {
         ) { entry in
             YearProgressWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("khatm")
+        .configurationDisplayName("percentage")
         .description("shows the percentage of your year elapsed or remaining")
         .supportedFamilies([.accessoryRectangular])
     }
 }
 
-#Preview(as: .accessoryRectangular) {
+#Preview("Year Progress Widget", as: .accessoryRectangular) {
     YearProgressWidget()
 } timeline: {
         SimpleEntry(
