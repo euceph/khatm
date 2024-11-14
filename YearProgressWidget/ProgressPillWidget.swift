@@ -113,7 +113,7 @@ struct ProgressPillWidget: Widget {
         }
         .configurationDisplayName("pill percentage")
         .description("chunky pill progress bar with tiny percentage")
-        .supportedFamilies([.accessoryRectangular, .systemMedium, .systemLarge])
+        .supportedFamilies([.accessoryRectangular])
     }
 }
 
