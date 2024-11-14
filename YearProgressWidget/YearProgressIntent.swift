@@ -55,11 +55,15 @@ struct YearProgressIntent: WidgetConfigurationIntent {
     @Parameter(title: "perspective")
     var progressOption: YearProgressOptionEntity?
     
-    @Parameter(title: "decimal", default: 3)
+    @Parameter(
+        title: "decimal",
+        default: 3,
+        controlStyle: .stepper,
+        inclusiveRange: (0, 6)
+    )
     var decimalPlaces: Int
     
     var resolvedProgressOption: YearProgressOptionEntity {
         progressOption ?? YearProgressOptionEntity(id: "remaining", displayOption: .remaining)
     }
 }
-
