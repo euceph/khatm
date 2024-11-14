@@ -139,7 +139,7 @@ struct ProgressPillWidget: Widget {
     ProgressPillWidget()
 } timeline: {
     let calendar = Calendar.current
-    let dates = stride(from: 0, through: 45, by: 15).compactMap { dayOffset in
+    let dates = stride(from: 0, through: 60, by: 15).compactMap { dayOffset in
         calendar.date(byAdding: .day, value: dayOffset, to: .now)
     }
     return dates.map { date in
@@ -151,7 +151,7 @@ struct ProgressPillWidget: Widget {
     ProgressPillWidget()
 } timeline: {
     let calendar = Calendar.current
-    let dates = stride(from: 0, through: 45, by: 15).compactMap { dayOffset in
+    let dates = stride(from: 0, through: 60, by: 15).compactMap { dayOffset in
         calendar.date(byAdding: .day, value: dayOffset, to: .now)
     }
     return dates.map { date in
