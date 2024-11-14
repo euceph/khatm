@@ -25,14 +25,20 @@ struct ProgressPillProvider: AppIntentTimelineProvider {
     func timeline(for configuration: YearProgressIntent, in context: Context) async -> Timeline<ProgressPillEntry> {
         let currentDate = Date()
         let calendar = Calendar.current
-        let nextUpdate = calendar.startOfDay(for: currentDate).addingTimeInterval(24 * 60 * 60)
-        let entry = ProgressPillEntry(
-            date: currentDate,
-            displayOption: configuration.resolvedProgressOption.displayOption,
-            decimalPlaces: configuration.decimalPlaces
-        )
-        return Timeline(entries: [entry], policy: .after(nextUpdate))
+        
+        let entries = stride(from: 0, through: 60, by: 5).map { minuteOffset in
+            let entryDate = calendar.date(byAdding: .minute, value: minuteOffset, to: currentDate)!
+            return ProgressPillEntry(
+                date: entryDate,
+                displayOption: configuration.resolvedProgressOption.displayOption,
+                decimalPlaces: configuration.decimalPlaces
+            )
+        }
+        
+        let nextUpdate = calendar.date(byAdding: .minute, value: 5, to: entries.last?.date ?? currentDate)!
+        return Timeline(entries: entries, policy: .after(nextUpdate))
     }
+    
 }
 
 struct ProgressPillEntry: TimelineEntry {

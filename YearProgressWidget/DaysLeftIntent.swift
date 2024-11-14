@@ -22,12 +22,12 @@ struct DaysLeftOptionEntity: AppEntity {
         case .daysLeft:
             return DisplayRepresentation(
                 title: "days left",
-                subtitle: "shows number of days that are left in the year"
+                subtitle: "show how many days are left in the year"
             )
         case .daysPassed:
             return DisplayRepresentation(
                 title: "days passed",
-                subtitle: "shows number of days that have passed in the year"
+                subtitle: "show how many days have passed in the year"
             )
         }
     }
