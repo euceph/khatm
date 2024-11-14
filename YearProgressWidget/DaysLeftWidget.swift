@@ -94,7 +94,7 @@ struct DaysLeftWidget: Widget {
             DaysLeftWidgetEntryView(entry: entry)
         }
         .configurationDisplayName("days")
-        .description("the number of days passed/left in your year")
+        .description("the number of days passed or left in your year")
         .supportedFamilies([.accessoryRectangular])
     }
 }
