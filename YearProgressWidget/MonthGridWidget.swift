@@ -3,11 +3,11 @@ import SwiftUI
 
 struct MonthGridProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> MonthGridEntry {
-        MonthGridEntry(date: Date(), displayOption: .daysLeft)
+        MonthGridEntry(date: Date(), displayOption: .daysLeft, shape: .square)
     }
     
     func snapshot(for configuration: MonthGridIntent, in context: Context) async -> MonthGridEntry {
-        MonthGridEntry(date: Date(), displayOption: configuration.resolvedDisplayOption)
+        MonthGridEntry(date: Date(), displayOption: configuration.resolvedDisplayOption, shape: configuration.resolvedShape)
     }
     
     func timeline(for configuration: MonthGridIntent, in context: Context) async -> Timeline<MonthGridEntry> {
@@ -15,7 +15,7 @@ struct MonthGridProvider: AppIntentTimelineProvider {
         let calendar = Calendar.current
         
         let nextUpdate = calendar.startOfDay(for: currentDate).addingTimeInterval(24 * 60 * 60)
-        let entry = MonthGridEntry(date: currentDate, displayOption: configuration.resolvedDisplayOption)
+        let entry = MonthGridEntry(date: currentDate, displayOption: configuration.resolvedDisplayOption, shape: configuration.resolvedShape)
         return Timeline(entries: [entry], policy: .after(nextUpdate))
     }
 }
@@ -23,6 +23,7 @@ struct MonthGridProvider: AppIntentTimelineProvider {
 struct MonthGridEntry: TimelineEntry {
     let date: Date
     let displayOption: MonthGridDisplayOption
+    let shape: MonthGridShape
     
     var monthDays: [Date] {
         let calendar = Calendar.current
@@ -31,8 +32,8 @@ struct MonthGridEntry: TimelineEntry {
         
         return range.compactMap { day -> Date? in
             calendar.date(from: DateComponents(year: calendar.component(.year, from: date),
-                                            month: calendar.component(.month, from: date),
-                                            day: day))
+                                               month: calendar.component(.month, from: date),
+                                               day: day))
         }
     }
     
@@ -64,6 +65,7 @@ struct DayCell: View {
     let date: Date
     let currentDate: Date
     let displayOption: MonthGridDisplayOption
+    let shape: MonthGridShape
     let size: CGFloat
     
     var body: some View {
@@ -71,10 +73,10 @@ struct DayCell: View {
         let isPast = calendar.compare(date, to: currentDate, toGranularity: .day) == .orderedAscending
         let isToday = calendar.isDate(date, inSameDayAs: currentDate)
         
-        RoundedRectangle(cornerRadius: 1.5)
+        RoundedRectangle(cornerRadius: shape == .square ? 1.5 : 8)
             .fill(isToday ? Color.red.opacity(0.9) :
                     displayOption == .daysPassed ?
-                    (isPast ? .white : .white.opacity(0.3)) :
+                  (isPast ? .white : .white.opacity(0.3)) :
                     (isPast ? .white.opacity(0.3) : .white))
             .foregroundStyle(.primary)
             .frame(width: size, height: size)
@@ -98,9 +100,10 @@ struct MonthGridEntryView: View {
                             ForEach(week, id: \.self) { date in
                                 if let date = date {
                                     DayCell(date: date,
-                                           currentDate: entry.date,
-                                           displayOption: entry.displayOption,
-                                           size: dayWidth)
+                                            currentDate: entry.date,
+                                            displayOption: entry.displayOption,
+                                            shape: entry.shape,
+                                            size: dayWidth)
                                 } else {
                                     Color.clear.frame(width: dayWidth, height: dayWidth)
                                 }
@@ -182,7 +185,7 @@ struct MonthGridWidget: Widget {
 #Preview("Month Grid", as: .accessoryRectangular) {
     MonthGridWidget()
 } timeline: {
-    MonthGridEntry(date: Date(), displayOption: .daysLeft)
+    MonthGridEntry(date: Date(), displayOption: .daysLeft, shape: .square)
 }
 
 #Preview("Month Grid Timeline", as: .accessoryRectangular) {
@@ -193,6 +196,6 @@ struct MonthGridWidget: Widget {
         calendar.date(byAdding: .day, value: dayOffset, to: .now)
     }
     return dates.map { date in
-        MonthGridEntry(date: date, displayOption: .daysLeft)
+        MonthGridEntry(date: date, displayOption: .daysLeft, shape: .circle)
     }
 }
