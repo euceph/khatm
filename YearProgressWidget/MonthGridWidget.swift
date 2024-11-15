@@ -170,7 +170,7 @@ struct MonthGridWidget: Widget {
     MonthGridEntry(date: Date(), displayOption: .daysLeft)
 }
 
-#Preview("Timeline Month Grid", as: .accessoryRectangular) {
+#Preview("Month Grid Timeline", as: .accessoryRectangular) {
     MonthGridWidget()
 } timeline: {
     let calendar = Calendar.current
