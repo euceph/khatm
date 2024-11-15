@@ -26,15 +26,13 @@ struct MonthGridEntry: TimelineEntry {
     
     var monthDays: [Date] {
         let calendar = Calendar.current
-        
         let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
-        
         let range = calendar.range(of: .day, in: .month, for: monthStart)!
         
         return range.compactMap { day -> Date? in
             calendar.date(from: DateComponents(year: calendar.component(.year, from: date),
-                                               month: calendar.component(.month, from: date),
-                                               day: day))
+                                            month: calendar.component(.month, from: date),
+                                            day: day))
         }
     }
     
@@ -43,13 +41,29 @@ struct MonthGridEntry: TimelineEntry {
         let range = calendar.range(of: .day, in: .month, for: date)!
         let lastDay = range.upperBound - 1
         let currentDay = calendar.component(.day, from: date)
-        return "\(lastDay - currentDay + 1)"
+        
+        switch displayOption {
+        case .daysLeft:
+            return "\(lastDay - currentDay + 1)"
+        case .daysPassed:
+            return "\(currentDay)"
+        }
+    }
+    
+    var displayText: String {
+        switch displayOption {
+        case .daysLeft:
+            return "left"
+        case .daysPassed:
+            return "passed"
+        }
     }
 }
 
 struct DayCell: View {
     let date: Date
     let currentDate: Date
+    let displayOption: MonthGridDisplayOption
     let size: CGFloat
     
     var body: some View {
@@ -59,7 +73,9 @@ struct DayCell: View {
         
         RoundedRectangle(cornerRadius: 1.5)
             .fill(isToday ? Color.red.opacity(0.9) :
-                    isPast ? .white.opacity(0.3) : .white)
+                    displayOption == .daysPassed ?
+                    (isPast ? .white : .white.opacity(0.3)) :
+                    (isPast ? .white.opacity(0.3) : .white))
             .foregroundStyle(.primary)
             .frame(width: size, height: size)
     }
@@ -70,45 +86,48 @@ struct MonthGridEntryView: View {
     var entry: MonthGridEntry
     
     var body: some View {
-            if family == .accessoryRectangular {
-                let dayWidth: CGFloat = 10
-                
-                HStack() {
-                    VStack(alignment: .leading, spacing: 2) {
-                        let weeks = createWeekArrays(from: entry.monthDays)
-                        
-                        ForEach(weeks, id: \.self) { week in
-                            HStack(spacing: 2) {
-                                ForEach(week, id: \.self) { date in
-                                    if let date = date {
-                                        DayCell(date: date, currentDate: entry.date, size: dayWidth)
-                                    } else {
-                                        Color.clear.frame(width: dayWidth, height: dayWidth)
-                                    }
+        if family == .accessoryRectangular {
+            let dayWidth: CGFloat = 10
+            
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    let weeks = createWeekArrays(from: entry.monthDays)
+                    
+                    ForEach(weeks, id: \.self) { week in
+                        HStack(spacing: 2) {
+                            ForEach(week, id: \.self) { date in
+                                if let date = date {
+                                    DayCell(date: date,
+                                           currentDate: entry.date,
+                                           displayOption: entry.displayOption,
+                                           size: dayWidth)
+                                } else {
+                                    Color.clear.frame(width: dayWidth, height: dayWidth)
                                 }
                             }
                         }
                     }
-                    .padding(.leading, 4)
-                    
-                    Spacer()
-                    
-                    VStack(spacing: -4) {
-                        Text("\(entry.daysLeftInMonth)d")
-                            .font(.system(size: 48, weight: .bold))
-                            .minimumScaleFactor(0.5)
-                            .foregroundColor(.white)
-                        
-                        Text("left")
-                            .font(.system(size: 15, weight: .bold))
-                            .minimumScaleFactor(0.5)
-                            .foregroundColor(.white)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .padding(.trailing, 4)
                 }
+                .padding(.leading, 4)
+                
+                Spacer()
+                
+                VStack(spacing: -4) {
+                    Text("\(entry.daysLeftInMonth)d")
+                        .font(.system(size: 48, weight: .bold))
+                        .minimumScaleFactor(0.5)
+                        .foregroundColor(.white)
+                    
+                    Text(entry.displayText)
+                        .font(.system(size: 15, weight: .bold))
+                        .minimumScaleFactor(0.5)
+                        .foregroundColor(.white)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding(.trailing, 4)
             }
         }
+    }
     
     func createWeekArrays(from dates: [Date]) -> [[Date?]] {
         let calendar = Calendar.current
@@ -156,7 +175,7 @@ struct MonthGridWidget: Widget {
         }
         .supportedFamilies([.accessoryRectangular])
         .configurationDisplayName("month grid")
-        .description("display the days left in the current month as a grid")
+        .description("display the days in the current month as a grid")
     }
 }
 
@@ -170,7 +189,7 @@ struct MonthGridWidget: Widget {
     MonthGridWidget()
 } timeline: {
     let calendar = Calendar.current
-    let dates = stride(from: 0, through: 98, by: 14).compactMap { dayOffset in
+    let dates = stride(from: 0, through: 100, by: 10).compactMap { dayOffset in
         calendar.date(byAdding: .day, value: dayOffset, to: .now)
     }
     return dates.map { date in
