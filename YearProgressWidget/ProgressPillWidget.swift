@@ -123,19 +123,19 @@ struct ProgressPillWidget: Widget {
     }
 }
 
-#Preview("Pill Elapsed", as: .accessoryRectangular) {
+#Preview("Progress Pill Elapsed", as: .accessoryRectangular) {
     ProgressPillWidget()
 } timeline: {
     ProgressPillEntry(date: .now, displayOption: .elapsed, decimalPlaces: 3)
 }
 
-#Preview("Pill Remaining", as: .accessoryRectangular) {
+#Preview("Progress Pill Remaining", as: .accessoryRectangular) {
     ProgressPillWidget()
 } timeline: {
     ProgressPillEntry(date: .now, displayOption: .remaining, decimalPlaces: 3)
 }
 
-#Preview("Pill Elapsed Timeline", as: .accessoryRectangular) {
+#Preview("Progress Pill Elapsed Timeline", as: .accessoryRectangular) {
     ProgressPillWidget()
 } timeline: {
     let calendar = Calendar.current
@@ -147,7 +147,7 @@ struct ProgressPillWidget: Widget {
     }
 }
 
-#Preview("Pill Remaining Timeline", as: .accessoryRectangular) {
+#Preview("Progress Pill Remaining Timeline", as: .accessoryRectangular) {
     ProgressPillWidget()
 } timeline: {
     let calendar = Calendar.current

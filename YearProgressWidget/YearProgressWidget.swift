@@ -108,7 +108,7 @@ struct YearProgressWidget: Widget {
     }
 }
 
-#Preview("Year Progress Widget", as: .accessoryRectangular) {
+#Preview("accessoryRectangular Year Progress", as: .accessoryRectangular) {
     YearProgressWidget()
 } timeline: {
         SimpleEntry(
@@ -118,7 +118,7 @@ struct YearProgressWidget: Widget {
         )
 }
 
-#Preview("Circular Preview", as: .accessoryCircular) {
+#Preview("accessoryCircular Year Progress", as: .accessoryCircular) {
     YearProgressWidget()
 } timeline: {
     SimpleEntry(
@@ -128,7 +128,7 @@ struct YearProgressWidget: Widget {
     )
 }
 
-#Preview("Live Updates", as: .accessoryRectangular) {
+#Preview("Year Progress Timeline", as: .accessoryRectangular) {
     YearProgressWidget()
 } timeline: {
     let calendar = Calendar.current

@@ -99,19 +99,19 @@ struct DaysLeftWidget: Widget {
     }
 }
 
-#Preview("Days Left Widget", as: .accessoryRectangular) {
+#Preview("Days Left", as: .accessoryRectangular) {
     DaysLeftWidget()
 } timeline: {
     DaysLeftEntry(date: .now, displayOption: .daysLeft)
 }
 
-#Preview("Days Left Specific Date", as: .accessoryRectangular) {
+#Preview("Days Left Specific", as: .accessoryRectangular) {
     DaysLeftWidget()
 } timeline: {
     DaysLeftEntry(date: DateComponents(calendar: .current, year: 2024, month: 1, day: 1).date ?? .now, displayOption: .daysLeft)
 }
 
-#Preview("Live Update Preview - Days Left", as: .accessoryRectangular) {
+#Preview("Days Left Timeline", as: .accessoryRectangular) {
     DaysLeftWidget()
 } timeline: {
     let calendar = Calendar.current
@@ -123,7 +123,7 @@ struct DaysLeftWidget: Widget {
     }
 }
 
-#Preview("Live Update Preview - Days Passed", as: .accessoryRectangular) {
+#Preview("Days Passed Timeline", as: .accessoryRectangular) {
     DaysLeftWidget()
 } timeline: {
     let calendar = Calendar.current

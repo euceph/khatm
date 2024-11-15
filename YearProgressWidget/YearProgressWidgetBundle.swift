@@ -14,5 +14,6 @@ struct YearProgressWidgetBundle: WidgetBundle {
         YearProgressWidget()
         ProgressPillWidget()
         DaysLeftWidget()
+        MonthGridWidget()
     }
 }
