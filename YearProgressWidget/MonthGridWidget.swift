@@ -77,7 +77,7 @@ struct MonthGridEntryView: View {
             if family == .accessoryRectangular {
                 let dayWidth: CGFloat = 10
                 
-                HStack(spacing: 2) {
+                HStack() {
                     VStack(alignment: .leading, spacing: 2) {
                         let weeks = createWeekArrays(from: entry.monthDays)
                         
