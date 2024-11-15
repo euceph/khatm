@@ -38,16 +38,12 @@ struct MonthGridEntry: TimelineEntry {
         }
     }
     
-    var monthName: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM"
-        return formatter.string(from: date)
-    }
-    
-    var dayNumber: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d"
-        return formatter.string(from: date)
+    var daysLeftInMonth: String {
+        let calendar = Calendar.current
+        let range = calendar.range(of: .day, in: .month, for: date)!
+        let lastDay = range.upperBound - 1
+        let currentDay = calendar.component(.day, from: date)
+        return "\(lastDay - currentDay + 1)"
     }
 }
 
@@ -97,14 +93,14 @@ struct MonthGridEntryView: View {
                     
                     Spacer()
                     
-                    VStack(spacing: -5) {
-                        Text(entry.dayNumber)
+                    VStack(spacing: -4) {
+                        Text("\(entry.daysLeftInMonth)d")
                             .font(.system(size: 48, weight: .bold))
                             .minimumScaleFactor(0.5)
                             .foregroundColor(.white)
                         
-                        Text(entry.monthName)
-                            .font(.system(size: 17.5, weight: .bold))
+                        Text("left")
+                            .font(.system(size: 15, weight: .bold))
                             .minimumScaleFactor(0.5)
                             .foregroundColor(.white)
                     }
