@@ -8,7 +8,7 @@ struct ContentView: View {
                 .fontWeight(.bold)
                 .padding()
             
-            Text("add the widget to your lock screen to see the percentage of your year remaining.")
+            Text("add the widget to your lock screen to see the percentage of your year remaining")
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
             
