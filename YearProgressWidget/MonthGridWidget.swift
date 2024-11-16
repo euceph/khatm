@@ -188,6 +188,12 @@ struct MonthGridWidget: Widget {
     MonthGridEntry(date: Date(), displayOption: .daysLeft, shape: .square)
 }
 
+#Preview("Month Grid Specific", as: .accessoryRectangular) {
+    MonthGridWidget()
+} timeline: {
+    MonthGridEntry(date: DateComponents(calendar: .current, year: 2025, month: 1, day: 9).date ?? .now, displayOption: .daysLeft, shape: .square)
+}
+
 #Preview("Month Grid Timeline", as: .accessoryRectangular) {
     MonthGridWidget()
 } timeline: {
