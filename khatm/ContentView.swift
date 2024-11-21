@@ -4,9 +4,8 @@ struct ContentView: View {
     var body: some View {
         VStack(spacing: 20) {
             Text("khatm")
-                .font(.title)
+                .font(.system(size: 50))
                 .fontWeight(.bold)
-                .padding()
             
             Text("add the widget to your lock screen to see the percentage of your year remaining")
                 .multilineTextAlignment(.center)
